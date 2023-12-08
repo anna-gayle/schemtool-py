@@ -47,6 +47,6 @@ Author is currently working on another project.
   - requirements.txt
 
 ## Sample Output
-![Sample Output](sample output.png)
+![Sample Output](schemtool-py/sampleoutput.png)
 
 > Icons by Icons8.
