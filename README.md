@@ -46,7 +46,6 @@ Author is currently working on another project.
   - Python
   - requirements.txt
 
-## Screenshot
 ![Screenshot](sample-screenshot.png)
 
 > Icons by Icons8.
