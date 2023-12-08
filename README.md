@@ -47,6 +47,6 @@ Author is currently working on another project.
   - requirements.txt
 
 ## Screenshot
-![Sample Output](sample-output.png)
+![Screenshot](sample-screenshot.png)
 
 > Icons by Icons8.
