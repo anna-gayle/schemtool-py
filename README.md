@@ -13,8 +13,6 @@ Author is currently working on another project.
 
 ## Features
 
-## Features
-
 - Create electronic schematics.
 - Move, rotate, and delete components.
 - Toggle grid lines on/off for better alignment.
