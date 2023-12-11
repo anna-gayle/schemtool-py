@@ -258,12 +258,18 @@ class SchematicDesigner:
         self.canvas = tk.Canvas(self.canvas_frame, width=self.canvas_width, height=self.canvas_height, bg="white",
                                 bd=3, relief=tk.SUNKEN)
 
-        # Pack and expand the canvas to fill available space
-        self.canvas.pack(fill=tk.BOTH, expand=True)
+        # Pack the canvas without filling or expanding
+        self.canvas.pack()
 
         # Configure the root column to expand the canvas
         self.root.grid_columnconfigure(1, weight=1)
 
+        # Bind canvas resize event to update the label
+        self.canvas.bind("<Configure>", self.update_label)
+
+    def update_label(self, event):
+        # Update the label text with the current canvas size
+        self.size_label.config(text=f"Canvas Size: {self.canvas.winfo_width()} x {self.canvas.winfo_height()}")
 
     def setup_events(self):
         # Bind mouse events for drawing, clicking, and right-clicking on the canvas
