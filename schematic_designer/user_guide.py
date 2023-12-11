@@ -42,13 +42,12 @@ class UserGuideDialog(tk.Toplevel):
             "- Advanced Components: Provides advanced components like op-amps, transistors, etc.\n"
             "- Wires: Offers symbols for connecting components using wires.\n\n"
             "Menu Options:\n"
-            "- File -> Save*: Save the current schematic.\n"
+            "- File -> Save: Save the current schematic.\n"
             "- File -> Export as PNG: Export the schematic as a PNG file.\n"
             "- File -> Change Canvas Size: Adjust the size of the canvas.\n"
             "- File -> Exit: Close the application.\n\n"
-            "Note: Save function may not work as intended in the beta version. "
-            "For better reliability, use 'Export as PNG' frequently.\n\n"
             "Coming Soon:\n"
+            "- Snap functionality\n"
             "- More tools\n"
             "- Bug fixes\n"
             "- More schematic symbols\n"
@@ -59,5 +58,3 @@ class UserGuideDialog(tk.Toplevel):
         label = tk.Label(self, text=text, padx=10, pady=10)
         label.pack()
 
-        ok_button = tk.Button(self, text="OK", command=self.destroy)
-        ok_button.pack()
