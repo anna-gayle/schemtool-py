@@ -1,5 +1,5 @@
 # schemtool-py
-A basic Schematic Diagram designer using Tkinter.
+A basic Schematic Diagram designer using Tkinter and Pillow.
 
 ## Project Overview
 
