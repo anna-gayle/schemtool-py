@@ -273,11 +273,12 @@ class SchematicDesigner:
         self.canvas.bind("<Configure>", self.draw_grid)
 
         # Bind arrow keys for the move tool
-        self.canvas.bind("<Left>", lambda event: self.move_tool_arrow_key(event, "left"))
-        self.canvas.bind("<Right>", lambda event: self.move_tool_arrow_key(event, "right"))
-        self.canvas.bind("<Up>", lambda event: self.move_tool_arrow_key(event, "up"))
-        self.canvas.bind("<Down>", lambda event: self.move_tool_arrow_key(event, "down"))
+        # self.canvas.bind("<Left>", lambda event: self.move_tool_arrow_key(event, "left"))
+        # self.canvas.bind("<Right>", lambda event: self.move_tool_arrow_key(event, "right"))
+        # self.canvas.bind("<Up>", lambda event: self.move_tool_arrow_key(event, "up"))
+        # self.canvas.bind("<Down>", lambda event: self.move_tool_arrow_key(event, "down"))
 
+    '''
     def move_tool_arrow_key(self, event, direction):
         # Handle arrow key presses for the move tool
         if self.selected_tool == "move.png" and self.selection_active and self.selected_item:
@@ -295,7 +296,7 @@ class SchematicDesigner:
             # Move the selected item on the canvas
             self.canvas.move(self.selected_item, delta_x, delta_y)
             self.prev_x, self.prev_y = event.x, event.y
-
+    '''
 
     def click_on_item(self, event):
         # Handle click events based on the selected tool
