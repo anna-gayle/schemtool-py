@@ -44,6 +44,6 @@ Author is currently working on another project.
   - Python
   - requirements.txt
 
-![Screenshot](sample-screenshot.png)
+![Screenshot](EZ-UI.png)
 
 > Icons by Icons8.
