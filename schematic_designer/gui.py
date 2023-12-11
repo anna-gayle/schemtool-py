@@ -389,19 +389,22 @@ class SchematicDesigner:
             json.dump(save_data, file)
 
     def export_as_png(self):
-        # Export the canvas content as a PNG file
-        x = self.canvas.winfo_rootx() + self.canvas.winfo_x()
-        y = self.canvas.winfo_rooty() + self.canvas.winfo_y()
-        width = self.canvas.winfo_width()
-        height = self.canvas.winfo_height()
+        # Create an empty image with the same size as the canvas
+        image = Image.new("RGBA", (self.canvas.winfo_width(), self.canvas.winfo_height()), color="white")
 
-        screenshot = ImageGrab.grab(bbox=(x, y, x + width, y + height))
+        # Create a draw object
+        draw = ImageDraw.Draw(image)
+
+        # Use the postscript method to draw the canvas content onto the image
+        self.canvas.postscript(file="temp.eps", colormode="color")
+        temp_image = Image.open("temp.eps")
+        image.paste(temp_image, (0, 0))
 
         # Ask user for the file path to save the PNG file
         file_path = tk.filedialog.asksaveasfilename(defaultextension=".png", filetypes=[("PNG files", "*.png")])
 
         if file_path:
-            screenshot.save(file_path, "PNG")
+            image.save(file_path, "PNG")
 
     def open_file(self):
         # Open a JSON file dialog and load data from the selected file
