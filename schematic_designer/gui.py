@@ -52,7 +52,7 @@ class SchematicDesigner:
     """
     def __init__(self, root):
         self.root = root
-        self.root.title("Simple Schematic Designer Tool")
+        self.root.title("Easy Schematic Designer Tool")
         self.setup_menu_bar()
         self.setup_tools()
         self.symbol_images = {}
@@ -236,15 +236,37 @@ class SchematicDesigner:
 
             # Store the symbol image for reference
             self.symbol_images[symbol_name] = tk_symbol_image
-        except FileNotFoundError:
+        except FileNotFoundError as e:
+            # Print the exception for debugging
+            print("Error:", e)
             # If the file is not found, return without creating the component instance
             return
 
         # Create a new component instance on the canvas
         component_instance = ComponentInstance(self.canvas, symbol_name, symbol_x, symbol_y, self)
-        
+
         # Append the new component instance to the list
         self.component_instances.append(component_instance)
+
+    def setup_scrollbars(self):
+        # Create horizontal scrollbar
+        x_scrollbar = tk.Scrollbar(self.root, orient="horizontal", command=self.canvas.xview)
+        x_scrollbar.grid(row=1, column=1, columnspan=2, sticky="ew")
+
+        # Create vertical scrollbar
+        y_scrollbar = tk.Scrollbar(self.root, orient="vertical", command=self.canvas.yview)
+        y_scrollbar.grid(row=0, column=2, sticky="ns")
+
+        # Configure the root columns to expand the canvas and avoid overlapping
+        self.root.grid_columnconfigure(1, weight=1)
+        self.root.grid_columnconfigure(2, weight=0)  # Adjust weight as needed
+
+        # Configure the root rows to expand the canvas and avoid overlapping
+        self.root.grid_rowconfigure(0, weight=1)
+        self.root.grid_rowconfigure(1, weight=1)
+
+        # Configure the canvas to use the scrollbars
+        self.canvas.configure(xscrollcommand=x_scrollbar.set, yscrollcommand=y_scrollbar.set)
 
     def setup_canvas(self):
         # Create and configure the canvas frame
@@ -364,23 +386,29 @@ class SchematicDesigner:
 
 
     def save(self):
-        # Save schematic data to a JSON file
+        # Prompt the user for the file name and location
+        file_path = filedialog.asksaveasfilename(defaultextension=".json", filetypes=[("JSON files", "*.json")])
+
+        # Check if the user canceled the file dialog
+        if not file_path:
+            return
+
+        # Save schematic data to the chosen JSON file
         save_data = {
             "canvas_size": (self.canvas_width, self.canvas_height),
             "component_instances": [
                 {
                     "symbol_name": instance.symbol_name,
-                    "x": instance.x,
-                    "y": instance.y,
+                    "x": self.canvas.coords(instance.item)[0],  # Get the current x-coordinate
+                    "y": self.canvas.coords(instance.item)[1],  # Get the current y-coordinate
+                    "rotation_angle": instance.rotation_angle,  # Include the rotation angle
                 }
                 for instance in self.component_instances
             ],
         }
 
-        filename = "schematic_save.json"
-        with open(filename, "w") as file:
+        with open(file_path, "w") as file:
             json.dump(save_data, file)
-
 
     def export_as_png(self):
         # Export the canvas content as a PNG file
@@ -409,7 +437,6 @@ class SchematicDesigner:
         self.canvas.delete("all")
         self.component_instances = []
 
-
     def load_from_file(self, filename):
         # Load schematic data from a JSON file and create component instances on the canvas
         # Clear the canvas before loading new data
@@ -422,14 +449,24 @@ class SchematicDesigner:
                 symbol_name = instance_data.get("symbol_name")
                 x = instance_data.get("x")
                 y = instance_data.get("y")
+                rotation_angle = instance_data.get("rotation_angle", 0)  # Default to 0 if not present
 
                 if symbol_name and x is not None and y is not None:
-                    component_instance = ComponentInstance(self.canvas, symbol_name, 0, 0, self)
-                    
-                    # Set the coordinates for the component instance on the canvas
-                    self.canvas.coords(component_instance.item, x, y)
-                    
+                    component_instance = ComponentInstance(self.canvas, symbol_name, x, y, self)
+                    component_instance.rotation_angle = rotation_angle  # Set the rotation angle
+
+                    # Rotate the image for the loaded component
+                    rotated_image = component_instance.original_image.rotate(rotation_angle, expand=True)
+                    component_instance.tk_symbol_image = ImageTk.PhotoImage(rotated_image)
+
+                    # Update the image item on the canvas
+                    component_instance.item = self.canvas.create_image(x, y, image=component_instance.tk_symbol_image,
+                                                                        anchor=tk.NW, tags=("clickable",))
+
+                    # Append the new component instance to the list
                     self.component_instances.append(component_instance)
+
+                    print(f"Loaded component: Rotation angle = {rotation_angle}")
 
     def open_user_guide(self):
         # Open a user guide dialog to display information about the Schematic Designer
@@ -453,7 +490,6 @@ class SchematicDesigner:
         self.rotation_enabled = False
         self.delete_enabled = False
         self.update_tool_state()
-
 
     def draw(self, event):
         # Draw based on the selected tool (e.g., move or grid)
