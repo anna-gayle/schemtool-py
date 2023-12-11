@@ -247,44 +247,24 @@ class SchematicDesigner:
 
         # Append the new component instance to the list
         self.component_instances.append(component_instance)
-
-    def setup_scrollbars(self):
-        # Create horizontal scrollbar
-        x_scrollbar = tk.Scrollbar(self.root, orient="horizontal", command=self.canvas.xview)
-        x_scrollbar.grid(row=1, column=1, columnspan=2, sticky="ew")
-
-        # Create vertical scrollbar
-        y_scrollbar = tk.Scrollbar(self.root, orient="vertical", command=self.canvas.yview)
-        y_scrollbar.grid(row=0, column=2, sticky="ns")
-
-        # Configure the root columns to expand the canvas and avoid overlapping
-        self.root.grid_columnconfigure(1, weight=1)
-        self.root.grid_columnconfigure(2, weight=0)  # Adjust weight as needed
-
-        # Configure the root rows to expand the canvas and avoid overlapping
-        self.root.grid_rowconfigure(0, weight=1)
-        self.root.grid_rowconfigure(1, weight=1)
-
-        # Configure the canvas to use the scrollbars
-        self.canvas.configure(xscrollcommand=x_scrollbar.set, yscrollcommand=y_scrollbar.set)
-
+    
     def setup_canvas(self):
-        # Create and configure the canvas frame
-        self.canvas_frame = ttk.Frame(self.root)
-        self.canvas_frame.grid(row=0, column=1, rowspan=2, padx=5, pady=5, sticky="nsew")
+        # Create the main canvas container frame
+        self.canvas_container = tk.Frame(self.root)
+        self.canvas_container.grid(row=0, column=1, rowspan=2, padx=5, pady=5, sticky="nsew")
 
         # Set initial canvas dimensions
         self.canvas_width, self.canvas_height = 800, 600
 
-        # Create the canvas with specified attributes
-        self.canvas = tk.Canvas(self.canvas_frame, width=self.canvas_width, height=self.canvas_height, bg="white",
-                                bd=3, relief=tk.SUNKEN)
+        # Create the canvas inside the container frame
+        self.canvas = tk.Canvas(self.canvas_container, width=self.canvas_width, height=self.canvas_height, bg="white", bd=0, highlightthickness=0)
 
-        # Pack the canvas without filling or expanding
-        self.canvas.pack()
+        # Pack the canvas to expand and fill the remaining space
+        self.canvas.pack(expand=True, fill="both")
 
-        # Configure the root column to expand the canvas
-        self.root.grid_columnconfigure(1, weight=1)
+        # Configure the container frame to expand and fill the remaining space
+        self.canvas_container.grid_columnconfigure(0, weight=1)
+        self.canvas_container.grid_rowconfigure(0, weight=1)
 
         # Bind canvas resize event to update the label
         self.canvas.bind("<Configure>", self.update_label)
@@ -360,7 +340,6 @@ class SchematicDesigner:
         # Reset the selected item to None
         self.selected_item = None
 
-
     def perform_delete_selected_components(self, item_id):
         # Delete the selected component and remove it from the canvas
         selected_component = self.get_component_instance_by_item(item_id)
@@ -383,7 +362,6 @@ class SchematicDesigner:
             # Draw vertical grid lines
             for i in range(0, canvas_width, 20):
                 self.canvas.create_line(i, 0, i, canvas_height, fill="gray", tags="grid_line")
-
 
     def save(self):
         # Prompt the user for the file name and location
@@ -431,7 +409,6 @@ class SchematicDesigner:
         if file_path:
             self.load_from_file(file_path)
 
-
     def reset_canvas(self):
         # Reset the canvas by deleting all items and clearing component instances
         self.canvas.delete("all")
@@ -466,12 +443,9 @@ class SchematicDesigner:
                     # Append the new component instance to the list
                     self.component_instances.append(component_instance)
 
-                    print(f"Loaded component: Rotation angle = {rotation_angle}")
-
     def open_user_guide(self):
         # Open a user guide dialog to display information about the Schematic Designer
         user_guide_dialog = UserGuideDialog(self.root)
-
 
     def change_canvas_size(self):
         # Open a dialog to change the canvas size and update canvas dimensions if a valid size is provided
@@ -509,7 +483,6 @@ class SchematicDesigner:
         # Initialize the starting coordinates when the move tool is activated
         if self.selection_active and self.selected_tool == "move.png":
             self.prev_x, self.prev_y = event.x, event.y
-
 
     def update_tool_state(self):
         # Update the state of tool buttons based on the active tools
